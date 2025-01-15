@@ -17,10 +17,14 @@ class LoginRepository {
     final body = jsonEncode({'username': username, 'password': password});
     logger.i("[LoginRepository] Recived Parameters + $username  + $password");
 
-    final response = await api.login(body);
-    logger.i(
-        "[LoginRepository] request successfully. I will return: ${User.fromMap(response).toString()}");
-
-    return User.fromMap(response);
+    try {
+      final response = await api.login(body);
+      logger.i(
+          "[LoginRepository] request successfully. I will return: ${User.fromMap(response).toString()}");
+      return User.fromMap(response);
+    } catch (e) {
+      logger.e("[LoginRepository] request failed: $e");
+      rethrow;
+    }
   }
 }

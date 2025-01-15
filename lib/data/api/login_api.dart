@@ -20,9 +20,8 @@ class LoginApi {
       }
 
       throw Exception('Error en la petición: ${response.statusCode}');
-
     } catch (error) {
-      throw Exception('Solisitud sin respuesta: $error');
+      throw Exception('Solicitud sin respuesta: $error');
     }
   }
 }
