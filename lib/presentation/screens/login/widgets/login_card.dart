@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty_fase_2/data/shared/utilis/logger.dart';
+import 'package:rick_and_morty_fase_2/presentation/screens/home/home_screen.dart';
 import 'package:rick_and_morty_fase_2/presentation/screens/login/controller/login_controller.dart';
 import 'package:rick_and_morty_fase_2/presentation/shared/enum/ui_state.dart';
 
@@ -62,9 +63,11 @@ class LoginCard extends ConsumerWidget {
                           .login(
                               usernameController.text, passwordController.text)
                           .then((value) {
-                        //TODO: ENVIA A EL HOME SCREEN
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => const HomeScreen()));
                       }).catchError((error) {
-                        //TODO: Mensaje erroneo
+                        logger.e(
+                            "[LoginCard]: Error on login: ${error.toString()}");
                       });
                     },
               child: isLoading
