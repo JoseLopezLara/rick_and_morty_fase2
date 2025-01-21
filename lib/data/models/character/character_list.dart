@@ -37,7 +37,7 @@ class CharacterList {
     return CharacterList(
       info: Pagination.fromMap(map['info'] as Map<String, dynamic>),
       results: List<Character>.from(
-        (map['results'] as List<int>).map<Character>(
+        (map['results'] as List<dynamic>).map<Character>(
           (x) => Character.fromMap(x as Map<String, dynamic>),
         ),
       ),

@@ -13,11 +13,21 @@ class CharactersRepository {
   Future<CharacterList> getCharacters(String token, [String? url]) async {
     try {
       final jsonMap = await charactersApi.getCharacters(token, url);
+
+      logger.t(
+          '[CharactersRepository] getCharacters() | After to do getCharacters() api call');
+      //logger.d(jsonMap);
+
       logger.i(
-          'Personajes obtenidos correctamente: ${CharacterList.fromMap(jsonMap)}');
+          '[CharactersRepository] getCharacters() | Personajes obtenidos correctamente: ${CharacterList.fromMap(jsonMap)}');
+
+      logger
+          .t('[CharactersRepository] getCharacters() | After to do print log');
+
       return CharacterList.fromMap(jsonMap);
     } catch (e) {
-      logger.i('Error fetching characters: $e');
+      logger.i(
+          '[CharactersRepository] getCharacters() | Error fetching characters: $e');
       rethrow;
     }
   }

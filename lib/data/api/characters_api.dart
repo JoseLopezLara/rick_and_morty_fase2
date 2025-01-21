@@ -15,10 +15,13 @@ class CharactersApi {
     final statusCode = response.statusCode;
 
     if (statusCode == HttpStatus.ok) {
-      logger.i('Personajes obtenidos correctamente');
+      logger.i(
+          '[CharactersApi] getCharacters() | Personajes obtenidos correctamente');
+      //logger.d(response.body);
       return jsonDecode(response.body);
     } else {
-      throw Exception('Error al obtener los personajes');
+      throw Exception(
+          '[CharactersApi] getCharacters() | Error al obtener los personajes');
     }
   }
 }
