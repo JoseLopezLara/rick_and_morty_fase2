@@ -16,7 +16,7 @@ class CharactersRepository {
 
       logger.t(
           '[CharactersRepository] getCharacters() | After to do getCharacters() api call');
-      //logger.d(jsonMap);
+      logger.d(jsonMap);
 
       logger.i(
           '[CharactersRepository] getCharacters() | Personajes obtenidos correctamente: ${CharacterList.fromMap(jsonMap)}');

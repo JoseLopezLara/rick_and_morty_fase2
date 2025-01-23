@@ -45,15 +45,14 @@ class CharactersController extends ChangeNotifier {
       final charactersList = await repositoryProvider.charactersRepository
           .getCharacters(token, urlNextPage);
 
-      // VALIDAR ,LA INFORMACIÓN EN:
-      logger.i(
-          '[CharactersController] getAllCharacters() | character gotten: $charactersList');
-
       // Valida si es la primera o posterior a la primera solicitud, dependiendo de esto,
       // asigna o adjunta los personajes a la lista de personajes.
       urlNextPage == null
           ? _characters = charactersList.results
           : _characters.addAll(charactersList.results);
+
+      logger.i(
+          '[CharactersController] getAllCharacters() | character ${_characters.length} gotten');
 
       _pagination = charactersList.info;
     } catch (e) {

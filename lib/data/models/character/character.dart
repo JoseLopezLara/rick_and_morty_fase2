@@ -95,9 +95,9 @@ class Character {
       image: map['image'] as String,
       episode: map['episode'] == null
           ? []
-          : List<String>.from((map['episode'] as List<String>)),
+          : List<String>.from((map['episode'] as List<dynamic>)),
       url: map['url'] as String,
-      created: DateTime.fromMillisecondsSinceEpoch(map['created'] as int),
+      created: DateTime.parse(map['created'] as String),
     );
   }
 
