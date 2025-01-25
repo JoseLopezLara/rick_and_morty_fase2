@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:rick_and_morty_fase_2/presentation/screens/home/characters/characteres_screen.dart';
+import 'package:rick_and_morty_fase_2/presentation/screens/home/characters/characters_screen.dart';
 import 'package:rick_and_morty_fase_2/presentation/screens/home/episodes/episodes_screen.dart';
+import 'package:rick_and_morty_fase_2/presentation/screens/home/locations/locations_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,7 +15,11 @@ class _HomeScreenState extends State<HomeScreen> {
   // ----------------------------------
   int page = 0;
   final pageController = PageController();
-  final pages = [const CharacteresScreen(), const EpisodesScreen()];
+  final pages = [
+    const CharactersScreen(),
+    const LocationsScreen(),
+    const EpisodesScreen()
+  ];
 
   // LOGICA DE WIDGETS
   // ----------------------------------
@@ -42,11 +47,15 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
-            label: 'Characters',
+            label: 'Personajes',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.place),
+            label: 'Ubicaciones',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.tv),
-            label: 'Episodes',
+            label: 'Episodios',
           ),
         ],
       ),

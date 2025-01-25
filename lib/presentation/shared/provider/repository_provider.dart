@@ -6,27 +6,34 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty_fase_2/data/api/characters_api.dart';
-
+import 'package:rick_and_morty_fase_2/data/api/locations_api.dart';
 import 'package:rick_and_morty_fase_2/data/api/login_api.dart';
 import 'package:rick_and_morty_fase_2/data/repository/characters_repository.dart';
+import 'package:rick_and_morty_fase_2/data/repository/locations_repository.dart';
 import 'package:rick_and_morty_fase_2/data/repository/login_repository.dart';
 
 final repositoryProvider = Provider<RepositoryProvider>((ref) {
   final loginRepository = LoginRepository(api: LoginApi());
   final charactersRepository =
       CharactersRepository(charactersApi: CharactersApi());
+  final locationsRepository =
+      LocationsRepository(locationsApi: LocationsApi());
 
   return RepositoryProvider(
-      loginRepository: loginRepository,
-      charactersRepository: charactersRepository);
+    loginRepository: loginRepository,
+    charactersRepository: charactersRepository,
+    locationsRepository: locationsRepository,
+  );
 });
 
 class RepositoryProvider {
   final LoginRepository loginRepository;
   final CharactersRepository charactersRepository;
+  final LocationsRepository locationsRepository;
 
   RepositoryProvider({
     required this.loginRepository,
     required this.charactersRepository,
+    required this.locationsRepository,
   });
 }
