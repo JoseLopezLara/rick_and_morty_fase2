@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rick_and_morty_fase_2/data/models/character/character.dart';
-import 'package:rick_and_morty_fase_2/data/shared/utilis/location_utils.dart';
-import 'package:rick_and_morty_fase_2/presentation/screens/home/locations/widgets/bottom_sheet_location.dart';
+import 'package:rick_and_morty_fase_2/presentation/screens/home/locations/widgets/location_details_bottom_sheet.dart';
 
 class CharacterCard extends StatelessWidget {
   final Character character;
@@ -12,8 +11,7 @@ class CharacterCard extends StatelessWidget {
   }) : super(key: key);
 
   void _showLocationBottomSheet(BuildContext context) {
-    final locationId = extractLocationId(character.location.url);
-    if (locationId.isEmpty) return;
+    if (character.location.url.isEmpty) return;
 
     showModalBottomSheet(
       context: context,
@@ -23,8 +21,8 @@ class CharacterCard extends StatelessWidget {
         initialChildSize: 0.5,
         minChildSize: 0.3,
         maxChildSize: 0.9,
-        builder: (_, controller) => LocationBottomSheet(
-          locationId: locationId,
+        builder: (_, controller) => LocationDetailsBottomSheet(
+          locationUrl: character.location.url,
         ),
       ),
     );
@@ -32,75 +30,104 @@ class CharacterCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Image.network(
-            character.image,
-            height: 200,
-            fit: BoxFit.cover,
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+      child: Card(
+        color: Colors.grey[100],
+        shape: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: Colors.grey,
+            width: 1.0,
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  character.name,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Imagen del personaje
+            Expanded(
+              flex: 2,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.network(
+                  character.image,
+                  fit: BoxFit.cover,
                 ),
-                const SizedBox(height: 8),
-                _buildInfoRow('Estado:', character.status),
-                _buildInfoRow('Especie:', character.species),
-                _buildInfoRow('Género:', character.gender),
-                _buildInfoRow('Origen:', character.origin.name),
-                _buildInfoRow('Ubicación:', character.location.name),
-                const SizedBox(height: 16),
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () => _showLocationBottomSheet(context),
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                    ),
-                    child: const Text('Ver Locaciones'),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Row(
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                fontWeight: FontWeight.w500,
               ),
             ),
-          ),
-        ],
+            // Información del personaje
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'ID: ${character.id}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple[600],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      character.name,
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple[600],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      character.type.isEmpty ? 'No especificado' : character.type,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple[600],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      character.status,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple[600],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      character.gender,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.purple[600],
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () => _showLocationBottomSheet(context),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          backgroundColor: Colors.purple[600],
+                        ),
+                        child: const Text(
+                          'Ver Locaciones',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

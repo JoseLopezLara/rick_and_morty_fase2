@@ -2,10 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty_fase_2/data/models/location/location.dart';
 import 'package:rick_and_morty_fase_2/data/models/location/location_list.dart';
 import 'package:rick_and_morty_fase_2/data/repository/locations_repository.dart';
+import 'package:rick_and_morty_fase_2/presentation/screens/home/locations/controller/locations_controller.dart';
 import 'package:rick_and_morty_fase_2/presentation/screens/home/locations/provider/locations_state.dart';
+import 'package:rick_and_morty_fase_2/presentation/screens/login/provider/login_provider.dart';
 import 'package:rick_and_morty_fase_2/presentation/shared/enum/ui_state.dart';
 import 'package:rick_and_morty_fase_2/presentation/shared/provider/repository_provider.dart';
 
+// Antiguo provider para mantener compatibilidad
 final locationsProvider =
     StateNotifierProvider<LocationsNotifier, LocationsState>((ref) {
   final repository = ref.watch(locationsRepositoryProvider);
@@ -17,12 +20,19 @@ final locationsRepositoryProvider = Provider<LocationsRepository>((ref) {
   return repository.locationsRepository;
 });
 
-// Provider para obtener una ubicación específica
 final singleLocationProvider =
     FutureProvider.family<Location, String>((ref, locationId) async {
   final repository = ref.watch(locationsRepositoryProvider);
-  final token = ''; // TODO: Implement token management
+  final token = ref.read(loginProvider).getUser.accessToken;
   return repository.getLocation(token, locationId);
+});
+
+// Nuevo provider con ChangeNotifier
+final locationsControllerProvider = ChangeNotifierProvider((ref) {
+  return LocationsController(
+    repositoryProvider: ref.read(repositoryProvider),
+    token: ref.read(loginProvider).getUser.accessToken,
+  );
 });
 
 class LocationsNotifier extends StateNotifier<LocationsState> {
@@ -36,7 +46,7 @@ class LocationsNotifier extends StateNotifier<LocationsState> {
 
   Future<void> getLocations() async {
     try {
-      final token = ''; // TODO: Implement token management
+      final token = _ref.read(loginProvider).getUser.accessToken;
       final LocationList locationList = await _repository.getLocations(token);
 
       state = state.copyWith(
@@ -59,7 +69,7 @@ class LocationsNotifier extends StateNotifier<LocationsState> {
     try {
       state = state.copyWith(uiState: UiState.loading);
 
-      final token = ''; // TODO: Implement token management
+      final token = _ref.read(loginProvider).getUser.accessToken;
       final LocationList locationList =
           await _repository.getLocations(token, state.nextUrl);
 
@@ -89,7 +99,7 @@ class LocationsNotifier extends StateNotifier<LocationsState> {
         searchQuery: query,
       );
 
-      final token = ''; // TODO: Implement token management
+      final token = _ref.read(loginProvider).getUser.accessToken;
       final LocationList locationList =
           await _repository.searchLocations(token, query);
 

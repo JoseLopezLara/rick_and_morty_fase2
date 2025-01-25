@@ -29,7 +29,7 @@ class _CharactersScreenState extends ConsumerState<CharactersScreen> {
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent) {
+        _scrollController.position.maxScrollExtent * 0.85) {
       ref.read(charactersProvider.notifier).loadMoreCharacters();
     }
   }
@@ -39,41 +39,45 @@ class _CharactersScreenState extends ConsumerState<CharactersScreen> {
     final state = ref.watch(charactersProvider);
 
     return Scaffold(
-      body: _buildCharactersList(state),
+      body: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        child: Stack(
+          children: [
+            Column(
+              children: [
+                Expanded(
+                  child: _buildCharactersList(state),
+                ),
+                if (state.uiState == UiState.loading && state.characters.isNotEmpty)
+                  const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+              ],
+            ),
+            if (state.uiState == UiState.loading && state.characters.isEmpty)
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget _buildCharactersList(CharactersState state) {
-    switch (state.uiState) {
-      case UiState.loading:
-        if (state.characters.isEmpty) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        break;
-      case UiState.error:
-        if (state.characters.isEmpty) {
-          return Center(
-            child: Text('Error: ${state.errorMessage}'),
-          );
-        }
-        break;
-      case UiState.data:
-        break;
+    if (state.uiState == UiState.error && state.characters.isEmpty) {
+      return Center(
+        child: Text('Error: ${state.errorMessage}'),
+      );
     }
 
     return ListView.builder(
       controller: _scrollController,
-      itemCount: state.characters.length + (state.hasMore ? 1 : 0),
+      itemCount: state.characters.length,
       itemBuilder: (context, index) {
-        if (index == state.characters.length) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
-
         final character = state.characters[index];
         return CharacterCard(character: character);
       },

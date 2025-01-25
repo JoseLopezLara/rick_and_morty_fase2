@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty_fase_2/data/models/character/character_list.dart';
 import 'package:rick_and_morty_fase_2/data/repository/characters_repository.dart';
 import 'package:rick_and_morty_fase_2/presentation/screens/home/characters/provider/characters_state.dart';
+import 'package:rick_and_morty_fase_2/presentation/screens/login/provider/login_provider.dart';
 import 'package:rick_and_morty_fase_2/presentation/shared/enum/ui_state.dart';
 import 'package:rick_and_morty_fase_2/presentation/shared/provider/repository_provider.dart';
 
@@ -27,7 +28,7 @@ class CharactersNotifier extends StateNotifier<CharactersState> {
 
   Future<void> getCharacters() async {
     try {
-      final token = ''; // TODO: Implement token management
+      final token = _ref.read(loginProvider).getUser.accessToken;
       final CharacterList characterList = await _repository.getCharacters(token);
 
       state = state.copyWith(
@@ -50,7 +51,7 @@ class CharactersNotifier extends StateNotifier<CharactersState> {
     try {
       state = state.copyWith(uiState: UiState.loading);
 
-      final token = ''; // TODO: Implement token management
+      final token = _ref.read(loginProvider).getUser.accessToken;
       final CharacterList characterList =
           await _repository.getCharacters(token, state.nextUrl);
 
