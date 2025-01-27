@@ -2,8 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty_fase_2/data/models/location/location.dart';
+import 'package:rick_and_morty_fase_2/presentation/screens/home/locations/controller/locations_controller.dart';
 import 'package:rick_and_morty_fase_2/presentation/screens/home/locations/provider/locations_provider.dart';
-import 'package:rick_and_morty_fase_2/presentation/screens/home/locations/provider/locations_state.dart';
 import 'package:rick_and_morty_fase_2/presentation/shared/enum/ui_state.dart';
 
 class LocationsScreen extends ConsumerStatefulWidget {
@@ -36,20 +36,20 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent) {
-      ref.read(locationsProvider.notifier).loadMoreLocations();
+      ref.read(locationsControllerProvider).loadMoreLocations();
     }
   }
 
   void _onSearchChanged() {
     if (_debounceTimer?.isActive ?? false) _debounceTimer?.cancel();
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-      ref.read(locationsProvider.notifier).searchLocations(_searchController.text);
+      ref.read(locationsControllerProvider).searchLocations(_searchController.text);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final state = ref.watch(locationsProvider);
+    final controller = ref.watch(locationsControllerProvider);
 
     return Scaffold(
       body: Column(
@@ -68,24 +68,24 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
             ),
           ),
           Expanded(
-            child: _buildLocationsList(state),
+            child: _buildLocationsList(controller),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildLocationsList(LocationsState state) {
-    switch (state.uiState) {
+  Widget _buildLocationsList(LocationsController controller) {
+    switch (controller.pageState) {
       case UiState.loading:
-        if (state.locations.isEmpty) {
+        if (controller.locations.isEmpty) {
           return const Center(child: CircularProgressIndicator());
         }
         break;
       case UiState.error:
-        if (state.locations.isEmpty) {
+        if (controller.locations.isEmpty) {
           return Center(
-            child: Text('Error: ${state.errorMessage}'),
+            child: Text('Error: ${controller.errorMessage}'),
           );
         }
         break;
@@ -95,9 +95,9 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
 
     return ListView.builder(
       controller: _scrollController,
-      itemCount: state.locations.length + (state.hasMore ? 1 : 0),
+      itemCount: controller.locations.length + (controller.hasMore ? 1 : 0),
       itemBuilder: (context, index) {
-        if (index == state.locations.length) {
+        if (index == controller.locations.length) {
           return const Center(
             child: Padding(
               padding: EdgeInsets.all(16.0),
@@ -106,7 +106,7 @@ class _LocationsScreenState extends ConsumerState<LocationsScreen> {
           );
         }
 
-        final location = state.locations[index];
+        final location = controller.locations[index];
         return _LocationCard(location: location);
       },
     );

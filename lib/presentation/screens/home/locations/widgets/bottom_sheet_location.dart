@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rick_and_morty_fase_2/data/models/location/location.dart';
+import 'package:rick_and_morty_fase_2/presentation/screens/home/locations/controller/locations_controller.dart';
 import 'package:rick_and_morty_fase_2/presentation/screens/home/locations/provider/locations_provider.dart';
 import 'package:rick_and_morty_fase_2/presentation/shared/enum/ui_state.dart';
 
-class LocationBottomSheet extends ConsumerWidget {
+class LocationBottomSheet extends ConsumerStatefulWidget {
   final String locationId;
 
   const LocationBottomSheet({
@@ -13,8 +14,22 @@ class LocationBottomSheet extends ConsumerWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final locationFuture = ref.watch(singleLocationProvider(locationId));
+  ConsumerState<LocationBottomSheet> createState() => _LocationBottomSheetState();
+}
+
+class _LocationBottomSheetState extends ConsumerState<LocationBottomSheet> {
+  @override
+  void initState() {
+    super.initState();
+    // Obtener los detalles de la ubicación cuando se inicia el widget
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(locationsControllerProvider).getLocationDetails(widget.locationId);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = ref.watch(locationsControllerProvider);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -43,12 +58,22 @@ class LocationBottomSheet extends ConsumerWidget {
             ],
           ),
           const SizedBox(height: 16),
-          locationFuture.when(
-            data: (location) => _LocationDetails(location: location),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Center(
-              child: Text('Error: ${error.toString()}'),
-            ),
+          Builder(
+            builder: (context) {
+              switch (controller.pageState) {
+                case UiState.loading:
+                  return const Center(child: CircularProgressIndicator());
+                case UiState.error:
+                  return Center(
+                    child: Text('Error: ${controller.errorMessage}'),
+                  );
+                case UiState.data:
+                  if (controller.currentLocation != null) {
+                    return _LocationDetails(location: controller.currentLocation!);
+                  }
+                  return const Center(child: Text('No se encontró la ubicación'));
+              }
+            },
           ),
         ],
       ),
