@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // ----------------------------------
   int page = 0;
   final pageController = PageController();
-  final pages = [const CharacteresScreen(), const EpisodesScreen()];
+  final pages = [const CharacteresScreen(), const EpisodeScreen()];
 
   // LOGICA DE WIDGETS
   // ----------------------------------
