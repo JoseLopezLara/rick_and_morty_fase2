@@ -1,5 +1,3 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '/presentation/screens/home/episodes/widgets/episode_card.dart';
@@ -44,7 +42,7 @@ class EpisodeScreen extends ConsumerWidget {
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF00FF9D).withOpacity(0.3),
+                color: const Color(0xFF00FF9D).withValues(alpha: .3),
                 blurRadius: 20,
                 spreadRadius: 5,
               )
@@ -78,7 +76,7 @@ class EpisodeScreen extends ConsumerWidget {
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   filled: true,
-                  fillColor: const Color(0xFF2D3047).withOpacity(0.8),
+                  fillColor: const Color(0xFF2D3047).withValues(alpha: .8),
                   labelText: 'SCAN MULTIVERSE...',
                   labelStyle: const TextStyle(
                     color: Color(0xFF8E94B3),
@@ -131,7 +129,7 @@ class EpisodeScreen extends ConsumerWidget {
                 padding: const EdgeInsets.all(16.0),
                 child: CircularProgressIndicator(
                   color: const Color(0xFF00FF9D),
-                  backgroundColor: Colors.purple.withOpacity(0.3),
+                  backgroundColor: Colors.purple.withValues(alpha: .3),
                   strokeWidth: 5,
                 ),
               ),

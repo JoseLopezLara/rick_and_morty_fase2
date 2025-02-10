@@ -1,4 +1,3 @@
-// episode_card.dart modificado
 import 'package:flutter/material.dart';
 import '/data/models/episode.dart';
 
@@ -28,10 +27,10 @@ class EpisodeCard extends StatelessWidget {
           ),
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-              color: const Color(0xFF00FF9D).withOpacity(0.3), width: 2),
+              color: const Color(0xFF00FF9D).withValues(alpha: .3), width: 2),
           boxShadow: [
             BoxShadow(
-              color: Colors.purple.withOpacity(0.3),
+              color: Colors.purple.withValues(alpha: .3),
               blurRadius: 10,
               spreadRadius: 2,
             )
@@ -55,7 +54,7 @@ class EpisodeCard extends StatelessWidget {
                         letterSpacing: 1.2,
                         shadows: [
                           Shadow(
-                            color: Colors.black.withOpacity(0.5),
+                            color: Colors.black.withValues(alpha: .5),
                             blurRadius: 2,
                             offset: const Offset(1, 1),
                           )
@@ -75,7 +74,7 @@ class EpisodeCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
-                      const Color(0xFF00FF9D).withOpacity(0.5),
+                      const Color(0xFF00FF9D).withValues(alpha: .5),
                       Colors.transparent
                     ],
                   ),

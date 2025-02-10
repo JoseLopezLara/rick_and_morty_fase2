@@ -8,8 +8,7 @@ final Logger logger = Logger();
 class EpisodeRepository {
   final String baseUrl;
 
-  EpisodeRepository(
-      {required this.baseUrl}); // ✅ Constructor con el parámetro nombrado 'baseUrl'
+  EpisodeRepository({required this.baseUrl});
 
   // Método para obtener episodios con paginación y búsqueda
   Future<List<Episode>> getEpisodes({int page = 1, String? query}) async {
