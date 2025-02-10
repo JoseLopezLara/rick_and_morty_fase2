@@ -1,50 +1,34 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
-import 'package:rick_and_morty_fase_2/data/models/character/character.dart';
-import 'package:rick_and_morty_fase_2/data/models/episode.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '/data/models/character/character.dart';
+import '/data/models/episode.dart';
+import '/presentation/screens/home/episodes/provider/episode_providers.dart';
 
-class CharacterEpisodesModal extends StatefulWidget {
+class CharacterEpisodesModal extends ConsumerStatefulWidget {
   final Character character;
 
   const CharacterEpisodesModal({super.key, required this.character});
 
   @override
-  CharacterEpisodesModalState createState() => CharacterEpisodesModalState();
+  ConsumerState<CharacterEpisodesModal> createState() =>
+      _CharacterEpisodesModalState();
 }
 
-class CharacterEpisodesModalState extends State<CharacterEpisodesModal> {
-  bool isLoading = false;
-  List<Episode> episodes = [];
-
+class _CharacterEpisodesModalState
+    extends ConsumerState<CharacterEpisodesModal> {
   @override
   void initState() {
     super.initState();
-    fetchCharacterEpisodes();
-  }
-
-  Future<void> fetchCharacterEpisodes() async {
-    setState(() => isLoading = true);
-
-    try {
-      final fetchedEpisodes = <Episode>[];
-      for (final url in widget.character.episode) {
-        final response = await http.get(Uri.parse(url));
-        if (response.statusCode == 200) {
-          final data = json.decode(response.body);
-          fetchedEpisodes.add(Episode.fromJson(data));
-        }
-      }
-      setState(() => episodes = fetchedEpisodes);
-    } finally {
-      setState(() => isLoading = false);
-    }
+    // Llama al controlador para cargar episodios del personaje
+    ref.read(episodeControllerProvider.notifier).fetchCharacterEpisodes(
+          widget.character.episode, // Lista de URLs de episodios
+        );
   }
 
   @override
   Widget build(BuildContext context) {
+    final controller = ref.watch(episodeControllerProvider);
+
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
       decoration: BoxDecoration(
@@ -55,12 +39,12 @@ class CharacterEpisodesModalState extends State<CharacterEpisodesModal> {
         ),
         borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
         border: Border.all(
-          color: const Color(0xFF00FF9D).withOpacity(0.5),
+          color: const Color(0xFF00FF9D).withValues(alpha: .5),
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF00FF9D).withOpacity(0.2),
+            color: const Color(0xFF00FF9D).withValues(alpha: .2),
             blurRadius: 20,
             spreadRadius: 5,
           )
@@ -78,7 +62,7 @@ class CharacterEpisodesModalState extends State<CharacterEpisodesModal> {
               letterSpacing: 1.5,
               shadows: [
                 Shadow(
-                  color: Colors.black.withOpacity(0.5),
+                  color: Colors.black.withValues(alpha: .5),
                   blurRadius: 10,
                   offset: const Offset(2, 2),
                 )
@@ -87,37 +71,39 @@ class CharacterEpisodesModalState extends State<CharacterEpisodesModal> {
           ),
           const SizedBox(height: 15),
           Expanded(
-            child: isLoading
+            child: controller.isLoadingCharacterEpisodes
                 ? Center(
                     child: CircularProgressIndicator(
                       color: const Color(0xFF00FF9D),
-                      backgroundColor: Colors.purple.withOpacity(0.3),
+                      backgroundColor: Colors.purple.withValues(alpha: .3),
                     ),
                   )
-                : episodes.isEmpty
+                : controller.characterEpisodes.isEmpty
                     ? Center(
                         child: Text(
                           'NO MULTIVERSE DATA FOUND 🌌',
                           style: TextStyle(
                             fontFamily: 'RickAndMortyFont',
-                            color: const Color(0xFF00FF9D).withOpacity(0.7),
+                            color:
+                                const Color(0xFF00FF9D).withValues(alpha: .7),
                             fontSize: 18,
                           ),
                         ),
                       )
                     : ListView.separated(
                         physics: const BouncingScrollPhysics(),
-                        itemCount: episodes.length,
+                        itemCount: controller.characterEpisodes.length,
                         separatorBuilder: (context, index) => Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8),
                           child: Divider(
-                            color: const Color(0xFF00FF9D).withOpacity(0.3),
+                            color:
+                                const Color(0xFF00FF9D).withValues(alpha: .3),
                             height: 2,
                           ),
                         ),
                         itemBuilder: (context, index) {
-                          final ep = episodes[index];
-                          return _EpisodeTile(episode: ep);
+                          final episode = controller.characterEpisodes[index];
+                          return _EpisodeTile(episode: episode);
                         },
                       ),
           ),
@@ -136,10 +122,10 @@ class _EpisodeTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF2D3047).withOpacity(0.5),
+        color: const Color(0xFF2D3047).withValues(alpha: .5),
         borderRadius: BorderRadius.circular(15),
         border: Border.all(
-          color: const Color(0xFF00FF9D).withOpacity(0.3),
+          color: const Color(0xFF00FF9D).withValues(alpha: .3),
           width: 1,
         ),
       ),

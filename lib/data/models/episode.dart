@@ -1,3 +1,4 @@
+//lib/data/models/episode.dart
 class Episode {
   final int id;
   final String name;
